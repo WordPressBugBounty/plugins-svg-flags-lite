@@ -1,0 +1,1 @@
+# plugins-svg-flags-lite
