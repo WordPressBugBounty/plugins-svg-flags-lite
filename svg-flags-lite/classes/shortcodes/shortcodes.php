@@ -8,6 +8,8 @@ namespace WPGO_Plugins\SVG_Flags;
 class Shortcodes {
 
 	protected $module_roots;
+	protected $custom_plugin_data;
+	protected $country_codes;
 
 	/* Main class constructor. */
 	public function __construct( $module_roots, $custom_plugin_data ) {
@@ -36,9 +38,9 @@ class Shortcodes {
 		require_once $root . 'classes/shortcodes/svg-flag-image-shortcode.php';
 		SVG_Flag_Image_Shortcode::create_instance( $this->module_roots, $this->custom_plugin_data );
 
-		// [svg-flag-grid] shortcode
-		// require_once( $root . 'classes/shortcodes/svg-flag-grid-shortcode.php' );
-		// SVG_Flag_Grid_Shortcode::create_instance($this->module_roots, $this->custom_plugin_data);
+		// [svg-flag-grid] shortcode.
+		require_once $root . 'classes/shortcodes/svg-flag-grid-shortcode.php';
+		SVG_Flag_Grid_Shortcode::create_instance( $this->module_roots, $this->custom_plugin_data );
 	}
 
 } /* End class definition */

@@ -2,283 +2,148 @@
 
 namespace WPGO_Plugins\SVG_Flags;
 
-/*
- *    Class for the [svg-flags] shortcode
+/**
+ * Render the flag grid shortcode and dynamic block.
  */
+class SVG_Flag_Grid_Shortcode {
 
-class SVG_Flag_Grid_Shortcode
-{
+	protected static $instance;
+	protected $module_roots;
+	protected $custom_plugin_data;
+	protected $country_codes;
 
-    protected static $instance;
-    protected $module_roots;
+	/**
+	 * Main class constructor.
+	 */
+	protected function __construct( $module_roots, $custom_plugin_data ) {
+		$this->module_roots       = $module_roots;
+		$this->custom_plugin_data = $custom_plugin_data;
+		$this->country_codes      = $custom_plugin_data->country_codes;
 
-    /* Main class constructor. */
-    protected function __construct($module_roots, $custom_plugin_data)
-    {
-        $this->module_roots = Main::$module_roots;
-        $this->custom_plugin_data = $custom_plugin_data;
-        $this->country_codes = $this->custom_plugin_data->country_codes;
+		add_shortcode( 'svg-flag-grid', array( $this, 'render_svg_flag_grid_shortcode' ) );
+	}
 
-        add_shortcode('svg-flag-grid', array(&$this, 'render_svg_flag_grid_shortcode'));
-    }
+	/**
+	 * Create the shared renderer instance.
+	 */
+	public static function create_instance( $module_roots, $custom_plugin_data ) {
+		if ( ! self::$instance ) {
+			self::$instance = new self( $module_roots, $custom_plugin_data );
+		}
 
-    public static function create_instance($module_roots, $custom_plugin_data)
-    {
-        if (!self::$instance) {
-            self::$instance = new SVG_Flag_Grid_Shortcode($module_roots, $custom_plugin_data);
-        }
-        return self::$instance;
-    }
+		return self::$instance;
+	}
 
-    public static function get_instance()
-    {
-        if (!self::$instance) {
-            die('Error: Class instance hasn\'t been created yet.');
-        }
-        return self::$instance;
-    }
+	/**
+	 * Return the shared renderer instance.
+	 */
+	public static function get_instance() {
+		if ( ! self::$instance ) {
+			return null;
+		}
 
-    public function render_svg_flag_grid_block($attributes)
-    {
-      // manually set this to true as we're rendering a block
-      $attributes['gutenberg_block'] = true;
-      return $this->render_svg_flag_grid($attributes);
-    }
+		return self::$instance;
+	}
 
-    public function render_svg_flag_grid_shortcode($attributes)
-    {
-      // if any shortcode attributes specified then manually set 'gutenberg_block' this to false in case it has been set to true
-      if( is_array($attributes) ) {
-        $attributes['gutenberg_block'] = false;
-      }
+	/**
+	 * Render the dynamic block.
+	 */
+	public function render_svg_flag_grid_block( $attributes ) {
+		$attributes['gutenberg_block'] = true;
 
-      return $this->render_svg_flag_grid($attributes);
-    }
+		return $this->render_svg_flag_grid( $attributes );
+	}
 
-    public function render_svg_flag_grid($attributes)
-    {
-        // if $attributes are coming from a shortcode parse here
-        if (!(isset($attributes['gutenberg_block']) && $attributes['gutenberg_block'] === true)) {
+	/**
+	 * Render the shortcode.
+	 */
+	public function render_svg_flag_grid_shortcode( $attributes ) {
+		$attributes = is_array( $attributes ) ? $attributes : array();
+		$attributes['gutenberg_block'] = false;
 
-            // get attributes from the shortcode
-            $atts = shortcode_atts(array(
-                'flag' => 'gb',
-                'size' => '5',
-                'size_unit' => 'em',
-                //'width' => '1em', // not used anymore
-                //'height' => '1em', // not used anymore
-                'square' => false,
-                'caption' => false,
-                'random' => false,
-                'inline' => false,
-                'inline_valign' => 'middle'
-            ), $attributes, 'svg-flag-grid');
-            // might be empty string if no shortcode attributes specified
-            if (is_array($attributes)) {
-                $atts = array_merge($atts, $attributes);
-            }
-            $flag = esc_attr($atts['flag']);
+		return $this->render_svg_flag_grid( $attributes );
+	}
 
-            // if user has set 'width' instead of 'size' then manually correct and set 'size' equal to the width
-            if (isset($attributes['width']) && $attributes['width'] !== '') {
-                $atts['size'] = $attributes['width'];
-                $atts['size_unit'] = '';
-            }
+	/**
+	 * Build a responsive grid of unique, validated flag images.
+	 */
+	public function render_svg_flag_grid( $attributes ) {
+		$defaults = array(
+			'flags'      => 'gb,us,ca,fr,de,jp',
+			'columns'    => 3,
+			'gap'        => '1',
+			'gap_unit'   => 'rem',
+			'size'       => '8',
+			'size_unit'  => 'rem',
+			'square'     => false,
+			'caption'    => true,
+		);
 
-            // echo "SHORTCODE";
-            // echo "<pre>";
-            // echo "A:";
-            // print_r($attributes);
-            // echo "B:";
-            // print_r($atts);
-            // echo "</pre>";
-        } else {
-            // attributes come from an editor block
-            $atts = $attributes;
-            $flag = strtolower(json_decode($atts['flag'])->value);
-        }
+		$is_block = isset( $attributes['gutenberg_block'] ) && true === $attributes['gutenberg_block'];
+		$atts = $is_block
+			? array_merge( $defaults, $attributes )
+			: shortcode_atts( $defaults, $attributes, 'svg-flag-grid' );
 
-        // extract shortcode attributes
-        $size = esc_attr($atts['size']);
-        $size_unit = esc_attr($atts['size_unit']);
-        $square = $atts['square'];
+		$flags = $this->normalize_flags( $atts['flags'] );
+		$flags = apply_filters( 'svg_flag_grid_flags', $flags, $atts );
+		$flags = $this->normalize_flags( $flags );
 
-        // initialise shortcode element attribute arrays
-        $class_attribute = array();
-        $style_attribute = array();
-        $title_attribute = array();
+		if ( empty( $flags ) ) {
+			return '';
+		}
 
-        // display random flag?
-        if ($atts['random'] === true || $atts['random'] === 'true') {
-            $flag = array_rand($this->country_codes);
-        }
+		$columns = min( 8, max( 1, absint( $atts['columns'] ) ) );
+		$gap = Utility::sanitize_css_size( $atts['gap'], $atts['gap_unit'] );
+		$size = Utility::sanitize_css_size( $atts['size'], $atts['size_unit'] );
+		$aspect_ratio = Utility::is_truthy( $atts['square'] ) ? '1x1' : '4x3';
+		$show_caption = Utility::is_truthy( $atts['caption'] );
+		$grid_style = 'grid-template-columns:repeat(' . $columns . ',minmax(0,1fr));';
 
-        // filter flag and force to lower incase if it has been set to uppercase by user or via country array
-        $flag = strtolower(apply_filters('svg_flag_grid_shortcode_custom_flag', $flag, $atts));
+		if ( '' !== $gap ) {
+			$grid_style .= 'gap:' . $gap . ';';
+		}
 
-        // style attribute - inline
-        $inline = esc_attr($atts['inline']);
-        if ($inline === true || $inline === 'true') {
-            $inline_style = 'display:inline-block;';
-        } else {
-            $inline_style = 'display:block;';
-        }
+		$items = '';
+		foreach ( $flags as $flag ) {
+			$code = strtolower( $flag );
+			$name = $this->country_codes[ strtoupper( $code ) ];
+			$image_url = trailingslashit( $this->module_roots['uri'] )
+				. 'assets/flag-icon-css/flags/' . $aspect_ratio . '/' . $code . '.svg';
+			$image_style = '' !== $size ? ' style="width:' . esc_attr( $size ) . ';"' : '';
+			$caption = $show_caption
+				? '<figcaption class="svg-flag-grid__caption">' . esc_html( $name ) . '</figcaption>'
+				: '';
 
-        // compile shortcode styles
-        $inline_style = apply_filters('svg_flag_grid_shortcode_inline_style', $inline_style, $atts);
-        if (!empty($inline_style)) {
-            $sp = count($style_attribute) > 0 ? ' ' : '';
-            array_push($style_attribute, $sp . $inline_style);
-        }
+			$item = '<figure class="svg-flag-grid__item">'
+				. '<img class="svg-flag-grid__image"' . $image_style
+				. ' src="' . esc_url( $image_url ) . '" alt="' . esc_attr( $name ) . '" loading="lazy" decoding="async">'
+				. $caption
+				. '</figure>';
 
-        // filter flag element id - defaults to none
-        $id = apply_filters('svg_flag_grid_shortcode_id', '', $atts);
+			$items .= apply_filters( 'svg_flag_grid_item_html', $item, $code, $name, $atts );
+		}
 
-				// echo "<pre>";
-				// echo $id;
-				//print_r($attributes);
-        //print_r($atts);
-        // echo "</pre>";
+		return '<div class="svg-flag-grid" style="' . esc_attr( safecss_filter_attr( $grid_style ) ) . '">'
+			. $items
+			. '</div>';
+	}
 
-        // add another entry to the style attribute array
-        $inline_valign = esc_attr($atts['inline_valign']);
-        if (!empty($inline_valign) && ($atts['inline'] === true || $atts['inline'] === 'true')) {
-            $sp = count($style_attribute) > 0 ? ' ' : '';
-            array_push($style_attribute, $sp . 'vertical-align:' . $inline_valign . ';');
-        }
+	/**
+	 * Normalize a list of country codes and cap output to a practical size.
+	 */
+	protected function normalize_flags( $flags ) {
+		if ( ! is_array( $flags ) ) {
+			$flags = preg_split( '/[\s,]+/', (string) $flags, -1, PREG_SPLIT_NO_EMPTY );
+		}
 
-        // class attribute - default class
-        $sp = count($class_attribute) > 0 ? ' ' : '';
-        array_push($class_attribute, $sp . 'svg-flag-grid-img');
+		$normalized = array();
+		foreach ( array_slice( $flags, 0, 100 ) as $flag ) {
+			$code = strtoupper( sanitize_key( (string) $flag ) );
+			if ( isset( $this->country_codes[ $code ] ) ) {
+				$normalized[] = $code;
+			}
+		}
 
-        // class attribute - square
-        $sp = count($class_attribute) > 0 ? ' ' : '';
-        $aspect_ratio = '4x3';
-
-        $res = '0';
-        if ($square === true || $square === 'true') {
-          $res = '1';
-          $aspect_ratio = '1x1';
-          array_push($class_attribute, $sp . 'flag-icon-squared');
-        }
-
-        // style attribute - size
-        $sp = count($style_attribute) > 0 ? ' ' : '';
-        if (!empty($size)) {
-            array_push($style_attribute, $sp . 'width:' . $size . $size_unit . ';');
-            array_push($style_attribute, ' height:auto;');
-        }
-
-        // // style attribute - width
-        // if (!empty($width)) {
-        //     $sp = count($style_attribute) > 0 ? ' ' : '';
-        //     array_push($style_attribute, $sp . 'width:' . $width . ';');
-        // }
-        // // style attribute - height
-        // $sp = count($style_attribute) > 0 ? ' ' : '';
-        // array_push($style_attribute, $sp . 'height:auto;');
-
-        // caption
-        $caption = esc_attr($atts['caption']);
-        //echo "TOOLTIP: " . $tooltip . '<br>';
-        //echo "CUSTOM TOOLTIP: " . $custom_tooltip . '<br>';
-        //if ($caption === true || $caption === 'true') {
-        // The true(bool/string) value of caption is typecast to 1(string).    
-        if ( '1' === $caption || 'true' === $caption ) {
-            $flag_lookup_code = strtoupper($flag);
-            $caption_text_wrapper_open = '<div class="svg-flag-grid">';
-            $caption_text_heading_open = '<h3 class="svg-flag-grid-caption-heading">';
-            $caption_text = $this->country_codes[$flag_lookup_code];
-            $caption_text_heading_close = '</h3>';
-            $caption_text_wrapper_close = '</div>';
-            // $caption_text = apply_filters('svg_flag_grid_caption_text', $caption_text, $atts);
-        } else {
-            $caption_text_wrapper_open = '<div class="svg-flag-grid">';
-            $caption_text_heading_open = '';
-            $caption_text = '';
-            $caption_text_heading_close = '';
-            $caption_text_wrapper_close = '</div>';
-            //echo "CT: [" . $caption_text . ']<br>';
-        }
-        // don't show caption if flag is inline
-        if ($atts['inline'] === true || $atts['inline'] === 'true') {
-            $caption_text_wrapper_open = '';
-            $caption_text_heading_open = '';
-            $caption_text = '';
-            $caption_text_heading_close = '';
-            $caption_text_wrapper_close = '';
-        }
-
-        // filter shortcode element attribute arrays
-        $class_attribute = apply_filters('svg_flag_grid_shortcode_class_attribute', $class_attribute, $atts);
-        $style_attribute = apply_filters('svg_flag_grid_shortcode_style_attribute', $style_attribute, $atts);
-        $title_attribute = apply_filters('svg_flag_grid_shortcode_title_attribute', '', $atts, $flag, $this->country_codes);
-
-        // build element attributes
-        $el_attributes = Utility::build_el_attributes($class_attribute, $style_attribute, $title_attribute);
-
-        // start output buffering
-        ob_start();
-        echo $caption_text_wrapper_open;
-        echo '<div class="svg-flag-grid-item">';
-            echo '<img' . $id . $el_attributes . 'src="' . $this->module_roots['uri'] . '/assets/flag-icon-css/flags/' . $aspect_ratio . '/' . $flag . '.svg' . '">';
-            echo $caption_text_heading_open;
-            echo $caption_text;
-            echo $caption_text_heading_close;
-        echo '</div>';
-        echo '<div class="svg-flag-grid-item">';
-            echo '<img' . $id . $el_attributes . 'src="' . $this->module_roots['uri'] . '/assets/flag-icon-css/flags/' . $aspect_ratio . '/' . $flag . '.svg' . '">';
-            echo $caption_text_heading_open;
-            echo $caption_text;
-            echo $caption_text_heading_close;
-        echo '</div>';
-        echo '<div class="svg-flag-grid-item">';
-            echo '<img' . $id . $el_attributes . 'src="' . $this->module_roots['uri'] . '/assets/flag-icon-css/flags/' . $aspect_ratio . '/' . $flag . '.svg' . '">';
-            echo $caption_text_heading_open;
-            echo $caption_text;
-            echo $caption_text_heading_close;
-        echo '</div>';
-        echo '<div class="svg-flag-grid-item">';
-            echo '<img' . $id . $el_attributes . 'src="' . $this->module_roots['uri'] . '/assets/flag-icon-css/flags/' . $aspect_ratio . '/' . $flag . '.svg' . '">';
-            echo $caption_text_heading_open;
-            echo $caption_text;
-            echo $caption_text_heading_close;
-        echo '</div>';
-        echo '<div class="svg-flag-grid-item">';
-            echo '<img' . $id . $el_attributes . 'src="' . $this->module_roots['uri'] . '/assets/flag-icon-css/flags/' . $aspect_ratio . '/' . $flag . '.svg' . '">';
-            echo $caption_text_heading_open;
-            echo $caption_text;
-            echo $caption_text_heading_close;
-        echo '</div>';
-        echo '<div class="svg-flag-grid-item">';
-            echo '<img' . $id . $el_attributes . 'src="' . $this->module_roots['uri'] . '/assets/flag-icon-css/flags/' . $aspect_ratio . '/' . $flag . '.svg' . '">';
-            echo $caption_text_heading_open;
-            echo $caption_text;
-            echo $caption_text_heading_close;
-        echo '</div>';
-        echo '<div class="svg-flag-grid-item">';
-            echo '<img' . $id . $el_attributes . 'src="' . $this->module_roots['uri'] . '/assets/flag-icon-css/flags/' . $aspect_ratio . '/' . $flag . '.svg' . '">';
-            echo $caption_text_heading_open;
-            echo $caption_text;
-            echo $caption_text_heading_close;
-        echo '</div>';
-        echo '<div class="svg-flag-grid-item">';
-            echo '<img' . $id . $el_attributes . 'src="' . $this->module_roots['uri'] . '/assets/flag-icon-css/flags/' . $aspect_ratio . '/' . $flag . '.svg' . '">';
-            echo $caption_text_heading_open;
-            echo $caption_text;
-            echo $caption_text_heading_close;
-        echo '</div>';
-        echo '<div class="svg-flag-grid-item">';
-            echo '<img' . $id . $el_attributes . 'src="' . $this->module_roots['uri'] . '/assets/flag-icon-css/flags/' . $aspect_ratio . '/' . $flag . '.svg' . '">';
-            echo $caption_text_heading_open;
-            echo $caption_text;
-            echo $caption_text_heading_close;
-        echo '</div>';
-        echo $caption_text_wrapper_close;
-        $output = ob_get_contents();
-        ob_end_clean();
-
-        return $output;
-    }
-
-} /* End class definition */
+		return array_values( array_unique( $normalized ) );
+	}
+}

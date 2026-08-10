@@ -1,20 +1,32 @@
-=== SVG Flags - Beautiful Scalable Flags For All Countries!  ===
+=== SVG Flags – Country Flag Blocks and Galleries ===
 Contributors: dgwyer, wpgoplugins, gwycon
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6R94JSPJE9358
 Tags: svg, flag, country, scalable, world
-Requires at least: 5.0
-Tested up to: 5.9.2
-Stable tag: 0.9.6
+Requires at least: 6.3
+Tested up to: 7.0
+Requires PHP: 7.4
+Stable tag: 0.9.7
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Add SVG flags of the world anywhere on your site that scale to look great at any size!
+Add responsive SVG country flags, accessible flag images, and multi-country galleries with blocks or shortcodes.
 
 == Description ==
 
 SVG Flags of the world allows you to add high quality beautiful flags to your WordPress site in seconds. Display one or more flags at any scale without loss of quality and with a fixed aspect ratio so they always look great! Supported aspect ratios are 4:3 (default) and 1:1 (square).
 
-Create SVG flags visually, directly inside the Gutenberg block editor and preview them in realtime without having to leave the editor window. No more having to remember shortcode names and long lists of shortcode attributes.
+Create SVG flags visually in the block editor and preview them in real time. Choose from 271 current country, territory, regional, and organisation flags using a searchable selector, then control size, aspect ratio, captions, and layout without leaving the editor.
 
-The plugin also includes shortcodes if you prefer to use these instead. If your site is using the classic WordPress editor then you have no choice but to use shortcodes. To add SVG flags to your content it's as simple as inserting the <code>[svg-flags]</code> shortcode into a post or page. See the main plugin settings page for full information on all the attributes available.
+The plugin includes three dynamic blocks:
+
+* **SVG Flag** for a lightweight CSS-rendered flag.
+* **SVG Flag Image** for an accessible image with country-name alternative text.
+* **SVG Flag Grid** for responsive multi-country galleries with up to eight columns, adjustable spacing, captions, and square or 4:3 flags.
+
+Shortcodes are available for classic-editor and template use. Add one flag with <code>[svg-flag flag="gb"]</code>, an accessible image with <code>[svg-flag-image flag="fr"]</code>, or a gallery with <code>[svg-flag-grid flags="gb,us,ca,fr" columns="4" caption="true"]</code>.
+
+= Need more presentation control? =
+
+SVG Flags Pro adds flag headings, custom captions and tooltips, IDs and CSS classes, plus border, spacing, and presentation controls. Open the SVG Flags page in your WordPress dashboard to compare the available options and pricing.
 
 We hope you find this plugin useful. If you have a moment please consider <a href="https://wordpress.org/support/view/plugin-reviews/svg-flags-lite"><strong>rating</strong></a> it to show your support. It's very much appreciated and helps spread the word.
 
@@ -35,9 +47,9 @@ Also, why not take a look at our <a href="https://www.wpgoplugins.com" target="_
 
 Visit the <a target="_blank" href="https://wpgoplugins.com/document/svg-flags-documentation/">plugin documentation page</a> to see available SVG flags blocks, shortcodes and attributes, plus related options.
 
-= Is there a live demo available for the plugin? =
+= Where can I see SVG Flags in action? =
 
-Yes! You can see live examples of SVG flags available <a target="_blank" href="https://demo.wpgothemes.com/flexr/svg-flags-demo/">here</a>.
+Visit the <a target="_blank" href="https://wpgoplugins.com/plugins/svg-flags/">SVG Flags product page</a> for current examples, feature details, and links to the full documentation.
 
 = Is there a way to remember all shortcode attributes? =
 
@@ -45,7 +57,7 @@ If you use the SVG flag editor blocks then you won't need to remember any shortc
 
 = Where can I get the country code for each flag? =
 
-The plugin uses the Alpha-2 code system to identify individual countries. You can look up the the code for any specific country <a href="https://www.iban.com/country-codes" target="_blank">here</a>.
+The plugin uses Alpha-2 codes for countries and territories, plus the additional regional and organisation codes included by the bundled flag-icons library. You can look up standard country codes <a href="https://www.iban.com/country-codes" target="_blank">here</a>.
 
 == Screenshots ==
 
@@ -57,6 +69,18 @@ The plugin uses the Alpha-2 code system to identify individual countries. You ca
 6. Tables.
 
 == Changelog ==
+= 0.9.7, AUG 10, 2026 =
+
+* Restored compatibility with current WordPress and PHP releases.
+* Replaced the obsolete Node Sass build with a maintained Dart Sass and Webpack toolchain.
+* Improved the editor country selector and fixed admin asset loading.
+* Updated all blocks to Block API v3 and opted into current WordPress control sizing.
+* Hardened flag, shortcode, and release configuration handling.
+* Added a responsive multi-country Flag Grid block and shortcode.
+* Added accessible image alternative text and lazy loading.
+* Updated the Freemius SDK from 2.4.3 to 2.13.4.
+* Updated the bundled flag library from flag-icon-css 3.4.5 to flag-icons 7.5.0, with 271 current flags and legacy CSS class compatibility.
+* Replaced the legacy shared plugin framework with native SVG Flags admin and plugin services.
 
 = 0.9.6, MAR 21, 2022 =
 

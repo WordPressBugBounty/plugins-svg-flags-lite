@@ -10,6 +10,8 @@ class SVG_Flag_Image_Shortcode
 {
     protected static $instance;
     protected $module_roots;
+    protected $custom_plugin_data;
+    protected $country_codes;
 
     /* Main class constructor. */
     protected function __construct($module_roots, $custom_plugin_data)
@@ -93,12 +95,11 @@ class SVG_Flag_Image_Shortcode
         } else {
             // attributes come from an editor block
             $atts = $attributes;
-            $flag = strtolower(json_decode($atts['flag'])->value);
+            $flag = $atts['flag'];
         }
 
         // extract shortcode attributes
-        $size = esc_attr($atts['size']);
-        $size_unit = esc_attr($atts['size_unit']);
+        $size = Utility::sanitize_css_size($atts['size'], $atts['size_unit']);
         $square = $atts['square'];
 
         // initialise shortcode element attribute arrays
@@ -107,16 +108,19 @@ class SVG_Flag_Image_Shortcode
         $title_attribute = array();
 
         // display random flag?
-        if ($atts['random'] === true || $atts['random'] === 'true') {
+        if (Utility::is_truthy($atts['random'])) {
             $flag = array_rand($this->country_codes);
         }
 
         // filter flag and force to lower incase if it has been set to uppercase by user or via country array
-        $flag = strtolower(apply_filters('svg_flag_image_shortcode_custom_flag', $flag, $atts));
+        $flag = Utility::normalize_flag(
+            apply_filters('svg_flag_image_shortcode_custom_flag', $flag, $atts),
+            $this->country_codes
+        );
 
         // style attribute - inline
-        $inline = esc_attr($atts['inline']);
-        if ($inline === true || $inline === 'true') {
+        $inline = Utility::is_truthy($atts['inline']);
+        if ($inline) {
             $inline_style = 'display:inline-block;';
         } else {
             $inline_style = 'display:block;';
@@ -130,7 +134,7 @@ class SVG_Flag_Image_Shortcode
         }
 
         // filter flag element id - defaults to none
-        $id = apply_filters('svg_flag_image_shortcode_id', '', $atts);
+        $id = Utility::sanitize_id_attribute(apply_filters('svg_flag_image_shortcode_id', '', $atts));
 
 				// echo "<pre>";
 				// echo $id;
@@ -139,8 +143,9 @@ class SVG_Flag_Image_Shortcode
         // echo "</pre>";
 
         // add another entry to the style attribute array
-        $inline_valign = esc_attr($atts['inline_valign']);
-        if (!empty($inline_valign) && ($atts['inline'] === true || $atts['inline'] === 'true')) {
+        $inline_valign = sanitize_key($atts['inline_valign']);
+        $allowed_valign = array('baseline', 'bottom', 'middle', 'sub', 'super', 'text-bottom', 'text-top', 'top');
+        if ($inline && in_array($inline_valign, $allowed_valign, true)) {
             $sp = count($style_attribute) > 0 ? ' ' : '';
             array_push($style_attribute, $sp . 'vertical-align:' . $inline_valign . ';');
         }
@@ -153,9 +158,7 @@ class SVG_Flag_Image_Shortcode
         $sp = count($class_attribute) > 0 ? ' ' : '';
         $aspect_ratio = '4x3';
 
-        $res = '0';
-        if ($square === true || $square === 'true') {
-          $res = '1';
+        if (Utility::is_truthy($square)) {
           $aspect_ratio = '1x1';
           array_push($class_attribute, $sp . 'flag-icon-squared');
         }
@@ -163,7 +166,7 @@ class SVG_Flag_Image_Shortcode
         // style attribute - size
         $sp = count($style_attribute) > 0 ? ' ' : '';
         if (!empty($size)) {
-            array_push($style_attribute, $sp . 'width:' . $size . $size_unit . ';');
+            array_push($style_attribute, $sp . 'width:' . $size . ';');
             array_push($style_attribute, ' height:auto;');
         }
 
@@ -177,16 +180,16 @@ class SVG_Flag_Image_Shortcode
         // array_push($style_attribute, $sp . 'height:auto;');
 
         // caption
-        $caption = esc_attr($atts['caption']);
+        $caption = Utility::is_truthy($atts['caption']);
         //echo "TOOLTIP: " . $tooltip . '<br>';
         //echo "CUSTOM TOOLTIP: " . $custom_tooltip . '<br>';
         //if ($caption === true || $caption === 'true') {
         // The true(bool/string) value of caption is typecast to 1(string).    
-        if ( '1' === $caption ) {
+        if ($caption) {
             $flag_lookup_code = strtoupper($flag);
             $caption_text_wrapper_open = '<div class="svg-flags-caption">';
             $caption_text_heading_open = '<h3 class="svg-flags-image-caption-heading">';
-            $caption_text = $this->country_codes[$flag_lookup_code];
+            $caption_text = isset($this->country_codes[$flag_lookup_code]) ? $this->country_codes[$flag_lookup_code] : '';
             $caption_text_heading_close = '</h3>';
             $caption_text_wrapper_close = '</div>';
             $caption_text = apply_filters('svg_flag_image_caption_text', $caption_text, $atts);
@@ -199,7 +202,7 @@ class SVG_Flag_Image_Shortcode
             //echo "CT: [" . $caption_text . ']<br>';
         }
         // don't show caption if flag is inline
-        if ($atts['inline'] === true || $atts['inline'] === 'true') {
+        if ($inline) {
             $caption_text_wrapper_open = '';
             $caption_text_heading_open = '';
             $caption_text = '';
@@ -215,18 +218,15 @@ class SVG_Flag_Image_Shortcode
         // build element attributes
         $el_attributes = Utility::build_el_attributes($class_attribute, $style_attribute, $title_attribute);
 
-        // start output buffering
-        ob_start();
-        echo $caption_text_wrapper_open;
-        echo '<img' . $id . $el_attributes . 'src="' . $this->module_roots['uri'] . '/assets/flag-icon-css/flags/' . $aspect_ratio . '/' . $flag . '.svg' . '">';
-        echo $caption_text_heading_open;
-        echo $caption_text;
-        echo $caption_text_heading_close;
-        echo $caption_text_wrapper_close;
-        $output = ob_get_contents();
-        ob_end_clean();
+        $flag_name = isset($this->country_codes[strtoupper($flag)]) ? $this->country_codes[strtoupper($flag)] : '';
+        $image_url = trailingslashit($this->module_roots['uri']) . 'assets/flag-icon-css/flags/' . $aspect_ratio . '/' . $flag . '.svg';
 
-        return $output;
+        return $caption_text_wrapper_open
+            . '<img' . $id . $el_attributes . ' src="' . esc_url($image_url) . '" alt="' . esc_attr($flag_name) . '" loading="lazy" decoding="async">'
+            . $caption_text_heading_open
+            . esc_html($caption_text)
+            . $caption_text_heading_close
+            . $caption_text_wrapper_close;
     }
 
 } /* End class definition */

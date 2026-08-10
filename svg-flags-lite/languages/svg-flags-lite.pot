@@ -1,0 +1,375 @@
+# Copyright (C) 2026 David Gwyer
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: SVG Flags 0.9.7\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/svg-flags-lite\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-08-10T13:02:35+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: svg-flags-lite\n"
+
+#. Plugin Name of the plugin
+#: svg-flags.php
+#: classes/plugin-admin-pages/settings.php:49
+#: classes/plugin-admin-pages/settings.php:50
+#: classes/plugin-admin-pages/settings.php:64
+#: classes/plugin-admin-pages/settings.php:65
+#: classes/register-blocks.php:32
+msgid "SVG Flags"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: svg-flags.php
+msgid "https://wpgoplugins.com/document/svg-flags-documentation/"
+msgstr ""
+
+#. Description of the plugin
+#: svg-flags.php
+msgid "Easily add beautiful SVG flags to any HTML element!"
+msgstr ""
+
+#. Author of the plugin
+#: svg-flags.php
+msgid "David Gwyer"
+msgstr ""
+
+#. Author URI of the plugin
+#: svg-flags.php
+msgid "https://wpgoplugins.com"
+msgstr ""
+
+#: classes/constants.php:100
+#: src/blocks/_shared-components/flag-select.js:22
+msgid "United Kingdom"
+msgstr ""
+
+#: classes/modules/shortcodes/svg-flag-heading-shortcode.php:100
+msgid "Add heading…"
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:79
+msgid "You do not have permission to manage SVG Flags."
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:84
+msgid "Pro"
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:84
+msgid "Free"
+msgstr ""
+
+#. translators: 1: plugin version, 2: plugin edition.
+#: classes/plugin-admin-pages/settings.php:95
+#, php-format
+msgid "Version %1$s · %2$s edition"
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:102
+msgid "Publish polished flag collections—without leaving WordPress."
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:103
+msgid "Choose from 271 current country, territory, regional, and organisation flags, control their presentation visually, and publish through blocks or shortcodes."
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:106
+msgid "Create a page"
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:109
+msgid "Read the documentation"
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:113
+msgid "Explore SVG Flags Pro"
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:118
+msgid "Example flag collection"
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:127
+msgid "Three useful ways to add flags"
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:128
+msgid "No configuration is required. Insert a block or paste a shortcode and publish."
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:133
+msgid "Flag Grid"
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:134
+msgid "Build a responsive gallery with multiple countries, flexible columns, spacing, sizing, ratios, and optional captions."
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:138
+msgid "Flag Image"
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:139
+msgid "Add a semantic SVG image with an accessible country name, responsive sizing, lazy loading, and square or 4:3 presentation."
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:143
+msgid "CSS Flag"
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:144
+msgid "Use the lightweight flag block for compact inline or block-level flags, captions, and flexible sizing."
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:151
+msgid "Shortcode quick start"
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:152
+msgid "Shortcodes remain available for classic content, templates, and programmatic layouts."
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:159
+msgid "Match every flag to your design with Pro"
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:160
+msgid "Add flag headings, custom captions and tooltips, IDs and CSS classes, plus border, spacing, and presentation controls."
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:162
+msgid "Pro features are active on this site."
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:165
+msgid "See Pro pricing"
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:173
+msgid "Need help or have an idea?"
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:174
+msgid "Report a problem, suggest a country-display workflow, or tell us what would make SVG Flags more useful on your sites."
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:178
+msgid "Contact WPGO Plugins"
+msgstr ""
+
+#: classes/plugin-admin-pages/settings.php:181
+msgid "WordPress.org support"
+msgstr ""
+
+#: classes/plugin-links.php:64
+msgid "Get started"
+msgstr ""
+
+#: classes/plugin-links.php:68
+msgid "Upgrade to Pro"
+msgstr ""
+
+#: classes/modules/src/blocks/svg-flag-button/index.js:11
+msgid "SVG Flag Button"
+msgstr ""
+
+#: classes/modules/src/blocks/svg-flag-button/index.js:12
+msgid "Align Flag on left, right and center in a row"
+msgstr ""
+
+#: classes/modules/src/blocks/svg-flag-button/index.js:16
+#: classes/modules/src/blocks/svg-flag-heading/index.js:16
+#: src/blocks/svg-flag-grid/index.js:16
+#: src/blocks/svg-flag-image/index.js:16
+#: src/blocks/svg-flag/index.js:15
+msgid "SVG"
+msgstr ""
+
+#: classes/modules/src/blocks/svg-flag-button/index.js:17
+#: classes/modules/src/blocks/svg-flag-heading/index.js:17
+#: src/blocks/svg-flag-grid/index.js:17
+#: src/blocks/svg-flag-grid/inspector.js:26
+#: src/blocks/svg-flag-image/index.js:17
+#: src/blocks/svg-flag/index.js:16
+msgid "Flags"
+msgstr ""
+
+#: classes/modules/src/blocks/svg-flag-button/index.js:18
+msgid "Button"
+msgstr ""
+
+#: classes/modules/src/blocks/svg-flag-button/inspector.js:34
+#: classes/modules/src/blocks/svg-flag-heading/inspector.js:34
+msgid "Flag Tooltip"
+msgstr ""
+
+#: classes/modules/src/blocks/svg-flag-button/inspector.js:40
+#: classes/modules/src/blocks/svg-flag-heading/inspector.js:41
+#: src/blocks/svg-flag-image/inspector.js:41
+#: src/blocks/svg-flag/inspector.js:34
+msgid "Select SVG Flag"
+msgstr ""
+
+#: classes/modules/src/blocks/svg-flag-button/inspector.js:60
+#: classes/modules/src/blocks/svg-flag-heading/inspector.js:61
+msgid "Flag Heading"
+msgstr ""
+
+#: classes/modules/src/blocks/svg-flag-button/inspector.js:84
+#: classes/modules/src/blocks/svg-flag-heading/inspector.js:85
+#: src/blocks/svg-flag-image/inspector.js:61
+#: src/blocks/svg-flag/inspector.js:54
+msgid "Flag Dimensions"
+msgstr ""
+
+#: classes/modules/src/blocks/svg-flag-heading/index.js:11
+msgid "SVG Flag Heading"
+msgstr ""
+
+#: classes/modules/src/blocks/svg-flag-heading/index.js:12
+msgid "Display a Flag Inside a HTML Heading tag (H1, H2 etc.)"
+msgstr ""
+
+#: classes/modules/src/blocks/svg-flag-heading/index.js:18
+msgid "Heading"
+msgstr ""
+
+#: src/blocks/svg-flag-grid/edit.js:13
+#: src/blocks/svg-flag-grid/index.js:11
+msgid "SVG Flag Grid"
+msgstr ""
+
+#: src/blocks/svg-flag-grid/edit.js:14
+msgid "Add at least one country from the block settings."
+msgstr ""
+
+#: src/blocks/svg-flag-grid/index.js:12
+msgid "Build a responsive gallery of country and territory flags."
+msgstr ""
+
+#: src/blocks/svg-flag-grid/index.js:18
+msgid "Grid"
+msgstr ""
+
+#: src/blocks/svg-flag-grid/inspector.js:29
+msgid "Grid layout"
+msgstr ""
+
+#: src/blocks/svg-flag-grid/inspector.js:31
+msgid "Columns"
+msgstr ""
+
+#: src/blocks/svg-flag-grid/inspector.js:39
+msgid "Gap"
+msgstr ""
+
+#: src/blocks/svg-flag-grid/inspector.js:47
+msgid "Gap unit"
+msgstr ""
+
+#: src/blocks/svg-flag-grid/inspector.js:54
+msgid "Flag appearance"
+msgstr ""
+
+#: src/blocks/svg-flag-grid/inspector.js:57
+msgid "Maximum width"
+msgstr ""
+
+#: src/blocks/svg-flag-grid/inspector.js:65
+msgid "Width unit"
+msgstr ""
+
+#: src/blocks/svg-flag-grid/inspector.js:72
+msgid "Square flags"
+msgstr ""
+
+#: src/blocks/svg-flag-grid/inspector.js:77
+msgid "Show country names"
+msgstr ""
+
+#: src/blocks/svg-flag-image/index.js:11
+msgid "SVG Flag Image"
+msgstr ""
+
+#: src/blocks/svg-flag-image/index.js:12
+msgid "Display an SVG Flag Inside an image HTML element"
+msgstr ""
+
+#: src/blocks/svg-flag-image/index.js:18
+msgid "Image"
+msgstr ""
+
+#: src/blocks/svg-flag-image/inspector.js:34
+#: src/blocks/svg-flag/inspector.js:29
+msgid "Flag Caption"
+msgstr ""
+
+#: src/blocks/svg-flag/index.js:10
+msgid "SVG Flag"
+msgstr ""
+
+#: src/blocks/svg-flag/index.js:11
+msgid "Output an individual SVG Flag"
+msgstr ""
+
+#: src/blocks/svg-flag/index.js:17
+msgid "Country"
+msgstr ""
+
+#: src/blocks/_shared-components/flag-multi-select.js:34
+msgid "Countries and territories"
+msgstr ""
+
+#: src/blocks/_shared-components/flag-multi-select.js:35
+msgid "Type a country name or code, then press Enter. Drag is not required; remove a token to remove its flag."
+msgstr ""
+
+#: src/blocks/_shared-components/flag-select.js:51
+msgid "Country or territory"
+msgstr ""
+
+#: src/pro/extend-blocks.js:58
+msgid "Flag Attributes"
+msgstr ""
+
+#: src/pro/extend-blocks.js:114
+msgid "Flag Caption & Tooltip"
+msgstr ""
+
+#: src/pro/extend-blocks.js:120
+msgid "Flag Border"
+msgstr ""
+
+#: src/pro/extend-blocks.js:124
+msgid "Enter a valid CSS border value"
+msgstr ""
+
+#: src/pro/extend-blocks.js:132
+msgid "Enter a valid CSS border-radius value"
+msgstr ""
+
+#: src/pro/extend-blocks.js:144
+msgid "Flag Margin & Padding"
+msgstr ""
+
+#: src/pro/extend-blocks.js:147
+msgid "Margin"
+msgstr ""
+
+#: src/pro/extend-blocks.js:148
+msgid "Enter a valid CSS margin value"
+msgstr ""
+
+#: src/pro/extend-blocks.js:155
+msgid "Padding"
+msgstr ""
+
+#: src/pro/extend-blocks.js:156
+msgid "Enter a valid CSS padding value"
+msgstr ""
