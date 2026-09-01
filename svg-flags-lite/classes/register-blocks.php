@@ -91,7 +91,7 @@ class Register_Blocks {
 			),
 		);
 
-		if ( svg_flags_fs()->is__premium_only() ) {
+		if ( svg_flags_fs()->can_use_premium_code__premium_only() ) {
 			// Premium only block attributes.
 			$svg_flag_attr['id']             = array(
 				'type'    => 'string',
@@ -119,6 +119,7 @@ class Register_Blocks {
 		register_block_type(
 			'svg-flags/svg-flag',
 			array(
+				'api_version'     => 3,
 				'render_callback' => array( SVG_Flag_Shortcode::get_instance(), 'render_svg_flag_block' ),
 				// 'render_callback' => __NAMESPACE__ . '\\SVG_Flag_Shortcode::render_svg_flag',
 				// 'render_callback' => __NAMESPACE__ . '\\T1::render_st',
@@ -174,7 +175,7 @@ class Register_Blocks {
 			),
 		);
 
-		if ( svg_flags_fs()->is__premium_only() ) {
+		if ( svg_flags_fs()->can_use_premium_code__premium_only() ) {
 			// premium only block attributes
 			$svg_flag_image_attr['id']             = array(
 				'type'    => 'string',
@@ -217,6 +218,7 @@ class Register_Blocks {
 		register_block_type(
 			'svg-flags/svg-flag-image',
 			array(
+				'api_version'     => 3,
 				'render_callback' => array( SVG_Flag_Image_Shortcode::get_instance(), 'render_svg_flag_image_block' ),
 				// 'render_callback' => __NAMESPACE__ . '\\SVG_Flag_Shortcode::render_svg_flag',
 				// 'render_callback' => __NAMESPACE__ . '\\T1::render_st',
@@ -261,9 +263,12 @@ class Register_Blocks {
 			),
 		);
 
+		$svg_flag_grid_attr = apply_filters( 'svg_flag_grid_block_attributes', $svg_flag_grid_attr );
+
 		register_block_type(
 			'svg-flags/svg-flag-grid',
 			array(
+				'api_version'     => 3,
 				'render_callback' => array( SVG_Flag_Grid_Shortcode::get_instance(), 'render_svg_flag_grid_block' ),
 				'attributes'      => $svg_flag_grid_attr,
 			)

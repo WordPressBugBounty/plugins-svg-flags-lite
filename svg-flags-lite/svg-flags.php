@@ -14,7 +14,7 @@
  * Plugin Name: SVG Flags – Country Flag Blocks and Galleries
  * Plugin URI: https://wpgoplugins.com/plugins/svg-flags/
  * Description: Add responsive SVG flags, accessible flag images, and multi-country galleries with blocks or shortcodes.
- * Version: 0.9.7
+ * Version: 0.10.0
  * Requires at least: 6.3
  * Requires PHP: 7.4
  * Author: David Gwyer
@@ -79,12 +79,10 @@ if ( function_exists( __NAMESPACE__ . '\svg_flags_fs' ) ) {
 						'has_premium_version' => true,
 						'has_addons'          => false,
 						'has_paid_plans'      => true,
+						'navigation'          => 'menu',
 						'menu'                => array(
 							'slug'       => 'svg-flags-wpgoplugins',
-							'first-path' => 'options-general.php?page=svg-flags-wpgoplugins',
-							'parent'     => array(
-								'slug' => 'options-general.php',
-							),
+							'first-path' => 'admin.php?page=svg-flags-wpgoplugins',
 						),
 					)
 				);
@@ -94,7 +92,18 @@ if ( function_exists( __NAMESPACE__ . '\svg_flags_fs' ) ) {
 		}
 
 		// Init Freemius.
-		svg_flags_fs();
+		svg_flags_fs()->add_filter(
+			'is_submenu_visible',
+			static function ( $is_visible, $menu_id ) {
+				if ( 'support' === $menu_id && svg_flags_fs()->can_use_premium_code__premium_only() ) {
+					return false;
+				}
+
+				return $is_visible;
+			},
+			10,
+			2
+		);
 		// Signal that SDK was initiated.
 		do_action( 'svg_flags_fs_loaded' );
 	}

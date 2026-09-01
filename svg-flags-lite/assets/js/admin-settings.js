@@ -1,8 +1,1 @@
-// JavaScript for the plugin admin settings page
-jQuery(document).ready(function ($) {
-  
-  //console.log('admin settings: svg flags', svg_flags_admin_data);
-  wpgoplugins_admin_settings_fw.move_about_page_tab($, svg_flags_admin_data);
-  wpgoplugins_admin_settings_fw.add_numbered_icon_to_tab_label($, svg_flags_admin_menu_data);
-  wpgoplugins_admin_settings_fw.collapsible_settings_section($, svg_flags_admin_data);
-});
+document.addEventListener("click",async t=>{const a=t.target.closest("[data-svg-flags-confirm]");if(a&&!window.confirm(a.dataset.svgFlagsConfirm))return void t.preventDefault();const e=t.target.closest("[data-svg-flags-copy]");if(!e)return;const s=document.querySelector(e.dataset.svgFlagsCopy),o=e.parentElement.querySelector(".svg-flags-admin__copy-status");if(s)try{await navigator.clipboard.writeText(s.value),o.textContent=window.svg_flags_admin_data.copySuccess}catch(t){s.focus(),s.select();const a=document.execCommand("copy");o.textContent=a?window.svg_flags_admin_data.copySuccess:window.svg_flags_admin_data.copyError}});

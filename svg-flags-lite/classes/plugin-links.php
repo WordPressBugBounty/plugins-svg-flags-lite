@@ -61,7 +61,7 @@ class Plugin_Links {
 	public function add_settings_link( $links ) {
 		array_unshift(
 			$links,
-			'<a href="' . esc_url( $this->settings_url ) . '">' . esc_html__( 'Get started', 'svg-flags-lite' ) . '</a>'
+			'<a href="' . esc_url( $this->settings_url ) . '">' . esc_html__( 'Settings', 'svg-flags-lite' ) . '</a>'
 		);
 
 		if ( ! $this->is_premium ) {

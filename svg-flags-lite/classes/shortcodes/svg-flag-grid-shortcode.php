@@ -110,8 +110,9 @@ class SVG_Flag_Grid_Shortcode {
 			$image_url = trailingslashit( $this->module_roots['uri'] )
 				. 'assets/flag-icon-css/flags/' . $aspect_ratio . '/' . $code . '.svg';
 			$image_style = '' !== $size ? ' style="width:' . esc_attr( $size ) . ';"' : '';
+			$caption_text = apply_filters( 'svg_flag_grid_caption_text', $name, $code, $atts );
 			$caption = $show_caption
-				? '<figcaption class="svg-flag-grid__caption">' . esc_html( $name ) . '</figcaption>'
+				? '<figcaption class="svg-flag-grid__caption">' . esc_html( $caption_text ) . '</figcaption>'
 				: '';
 
 			$item = '<figure class="svg-flag-grid__item">'
@@ -123,9 +124,13 @@ class SVG_Flag_Grid_Shortcode {
 			$items .= apply_filters( 'svg_flag_grid_item_html', $item, $code, $name, $atts );
 		}
 
-		return '<div class="svg-flag-grid" style="' . esc_attr( safecss_filter_attr( $grid_style ) ) . '">'
+		$grid_class = apply_filters( 'svg_flag_grid_class', 'svg-flag-grid', $atts );
+		$grid_style = apply_filters( 'svg_flag_grid_style', $grid_style, $atts );
+		$html = '<div class="' . esc_attr( $grid_class ) . '" style="' . esc_attr( safecss_filter_attr( $grid_style ) ) . '">'
 			. $items
 			. '</div>';
+
+		return apply_filters( 'svg_flag_grid_html', $html, $flags, $atts );
 	}
 
 	/**

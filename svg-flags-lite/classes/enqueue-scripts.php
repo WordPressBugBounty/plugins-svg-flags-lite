@@ -28,6 +28,9 @@ class Enqueue_Scripts {
 	 */
 	protected $country_codes;
 
+	/** @var array<string, array{name: string, continent: string}> */
+	protected $country_catalog;
+
 	/**
 	 * Prefix shared by registered scripts and styles.
 	 *
@@ -43,6 +46,20 @@ class Enqueue_Scripts {
 	protected $settings_page_hook;
 
 	/**
+	 * Admin page slugs owned by this plugin.
+	 *
+	 * @var array<int, string>
+	 */
+	protected $admin_page_slugs;
+
+	/**
+	 * Settings model.
+	 *
+	 * @var Settings_Options
+	 */
+	protected $settings;
+
+	/**
 	 * WordPress editor script dependencies.
 	 *
 	 * @var array<int, string>
@@ -54,12 +71,21 @@ class Enqueue_Scripts {
 	 *
 	 * @param array<string, string> $module_roots      Common plugin paths.
 	 * @param Constants             $custom_plugin_data Plugin configuration.
+	 * @param Settings_Options      $settings Settings model.
 	 */
-	public function __construct( $module_roots, $custom_plugin_data ) {
+	public function __construct( $module_roots, $custom_plugin_data, $settings ) {
 		$this->module_roots        = $module_roots;
 		$this->country_codes       = $custom_plugin_data->country_codes;
+		$this->country_catalog     = $custom_plugin_data->country_catalog;
 		$this->enqueue_prefix      = $custom_plugin_data->enqueue_prefix;
 		$this->settings_page_hook  = $custom_plugin_data->settings_page_hook;
+		$this->settings            = $settings;
+		$this->admin_page_slugs    = array(
+			$custom_plugin_data->home_slug,
+			$custom_plugin_data->settings_slug,
+			$custom_plugin_data->new_features_slug,
+			$custom_plugin_data->plugin_slug . '-welcome',
+		);
 		$this->editor_dependencies = array(
 			'wp-api-fetch',
 			'wp-block-editor',
@@ -86,17 +112,26 @@ class Enqueue_Scripts {
 	 * @param string $hook_suffix Current admin screen hook.
 	 */
 	public function enqueue_admin_settings_assets( $hook_suffix ) {
-		$legacy_hooks = array(
-			'admin_page_svg-flags-wpgoplugins-new-features',
-			'admin_page_svg-flags-wpgoplugins-welcome',
-		);
-
-		if ( $this->settings_page_hook !== $hook_suffix && ! in_array( $hook_suffix, $legacy_hooks, true ) ) {
+		$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( ! in_array( $page, $this->admin_page_slugs, true ) ) {
 			return;
 		}
 
 		$this->enqueue_style( 'admin-settings-css', 'assets/css/admin-settings.css' );
 		$this->enqueue_style( 'core-css', 'assets/flag-icon-css/css/flag-icon.min.css' );
+		$this->enqueue_script(
+			'admin-settings-js',
+			'assets/js/admin-settings.js',
+			array()
+		);
+		wp_localize_script(
+			$this->enqueue_prefix . '-admin-settings-js',
+			'svg_flags_admin_data',
+			array(
+				'copySuccess' => __( 'Support summary copied.', 'svg-flags-lite' ),
+				'copyError'   => __( 'Copy failed. Select the summary and copy it manually.', 'svg-flags-lite' ),
+			)
+		);
 	}
 
 	/**
@@ -113,7 +148,7 @@ class Enqueue_Scripts {
 	public function enqueue_block_editor_assets() {
 		$dependencies = $this->editor_dependencies;
 
-		if ( svg_flags_fs()->is__premium_only() ) {
+		if ( svg_flags_fs()->can_use_premium_code__premium_only() ) {
 			$this->enqueue_script(
 				'extend-blocks-pro-js',
 				'classes/modules/js/extend.blocks.pro.js',
@@ -142,7 +177,11 @@ class Enqueue_Scripts {
 		wp_localize_script(
 			$handle,
 			'svg_flags_editor_data',
-			array( 'countries' => $this->country_codes )
+			array(
+				'countries' => $this->country_codes,
+				'catalog'   => $this->country_catalog,
+				'defaults'  => $this->settings->block_defaults(),
+			)
 		);
 		wp_enqueue_script( $handle );
 
@@ -153,8 +192,21 @@ class Enqueue_Scripts {
 	 * Load styles shared by editor and frontend block rendering.
 	 */
 	public function enqueue_block_assets() {
-		if ( svg_flags_fs()->is__premium_only() ) {
+		if ( svg_flags_fs()->can_use_premium_code__premium_only() ) {
 			$this->enqueue_style( 'block-pro-css', 'classes/modules/css/block.styles.pro.css' );
+			$this->enqueue_script(
+				'frontend-pro-js',
+				'classes/modules/js/frontend.pro.js',
+				array()
+			);
+			wp_localize_script(
+				$this->enqueue_prefix . '-frontend-pro-js',
+				'svg_flags_frontend_data',
+				array(
+					'oneFlag'   => __( '1 flag', 'svg-flags-lite' ),
+					'manyFlags' => __( '%d flags', 'svg-flags-lite' ),
+				)
+			);
 		}
 
 		$this->enqueue_style( 'core-css', 'assets/flag-icon-css/css/flag-icon.min.css' );

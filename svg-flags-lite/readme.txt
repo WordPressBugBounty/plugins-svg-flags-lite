@@ -1,10 +1,10 @@
 === SVG Flags – Country Flag Blocks and Galleries ===
-Contributors: dgwyer, wpgoplugins, gwycon
+Contributors: dgwyer, wpgoplugins
 Tags: svg, flag, country, scalable, world
 Requires at least: 6.3
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.9.7
+Stable tag: 0.10.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,7 +26,7 @@ Shortcodes are available for classic-editor and template use. Add one flag with 
 
 = Need more presentation control? =
 
-SVG Flags Pro adds flag headings, custom captions and tooltips, IDs and CSS classes, plus border, spacing, and presentation controls. Open the SVG Flags page in your WordPress dashboard to compare the available options and pricing.
+SVG Flags Pro adds linked flag cards, responsive linked grids, a searchable flag directory, flag headings, custom captions and tooltips, and deeper presentation controls. <a href="https://wpgoplugins.com/plugins/svg-flags/" target="_blank">Explore SVG Flags Pro</a> for the complete feature comparison and current pricing.
 
 We hope you find this plugin useful. If you have a moment please consider <a href="https://wordpress.org/support/view/plugin-reviews/svg-flags-lite"><strong>rating</strong></a> it to show your support. It's very much appreciated and helps spread the word.
 
@@ -61,14 +61,22 @@ The plugin uses Alpha-2 codes for countries and territories, plus the additional
 
 == Screenshots ==
 
-1. SVG flags rendering in the Gutenberg block-based editor.
-2. SVG Aspect Ratio.
-3. Headings.
-4. Div, Span, and Paragraph elements.
-5. Flag Sizes.
-6. Tables.
+1. The redesigned SVG Flags settings page with block, shortcode, and Pro guidance.
+2. Building a responsive eight-country Flag Grid in the current WordPress editor.
+3. A published flag collection using crisp local SVGs and accessible country captions.
 
 == Changelog ==
+= 0.10.0, SEP 1, 2026 =
+
+* Added a unified admin Home with more one-click flag starter drafts and clearer guidance.
+* Added persistent defaults for newly inserted Flag, Flag Image, and Flag Grid blocks.
+* Added privacy-safe support diagnostics, improved keyboard and responsive admin behaviour, and accurate edition status after licence deactivation.
+* Added direct routes to SVG Flags Pro and relevant WPGO companion plugins.
+
+= 0.9.8, AUG 20, 2026 =
+
+* Fix: Declared Block API v3 in every server-side block registration for the WordPress 7.1 iframed editor.
+
 = 0.9.7, AUG 10, 2026 =
 
 * Restored compatibility with current WordPress and PHP releases.

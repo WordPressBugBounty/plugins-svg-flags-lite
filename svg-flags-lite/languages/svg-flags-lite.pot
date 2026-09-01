@@ -2,7 +2,7 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: SVG Flags 0.9.7\n"
+"Project-Id-Version: SVG Flags 0.10.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/svg-flags-lite\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
